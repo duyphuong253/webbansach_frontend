@@ -1,6 +1,23 @@
-import React from "react";
+import React, { ChangeEvent, useState } from "react";
 
-function Navbar() {
+interface NavbarProps {
+    tuKhoaTimKiem: string,
+    setTuKhoaTimKiem: (tuKhoa: string) => void;
+}
+
+function Navbar({ tuKhoaTimKiem, setTuKhoaTimKiem }: NavbarProps) {
+
+    const [tuKhoaTamThoi, setTuKhoaTamThoi] = useState('');
+
+    const searchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setTuKhoaTamThoi(e.target.value);
+    }
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault(); // không reload trang
+        setTuKhoaTimKiem(tuKhoaTamThoi);
+    }
+
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
@@ -63,9 +80,9 @@ function Navbar() {
                     </ul>
                 </div>
                 {/* Tìm kiếm */}
-                <form className='d-flex'>
-                    <input className='form-control me-2' type='search' placeholder='Tìm kiếm' aria-label='Search'></input>
-                    <button className='btn btn-outline-success' type='submit'>Search</button>
+                <form className='d-flex' onSubmit={handleSearch}>
+                    <input className='form-control me-2' type='search' placeholder='Tìm kiếm' aria-label='Search' onChange={searchInputChange} value={tuKhoaTamThoi}></input>
+                    <button className='btn btn-outline-success' type='submit' onClick={handleSearch}>Search</button>
                 </form>
                 {/* Giỏ hàng */}
                 <ul className="navbar-nav me-1">

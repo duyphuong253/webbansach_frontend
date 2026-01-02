@@ -57,3 +57,15 @@ export async function lay3QuyenSachMoiNhat(): Promise<KetQuaInterface> {
 
     return laySach(duongDan);
 }
+
+// Tìm kiếm sách theo endpoint http://localhost:8081/sach/search/findByTenSachContaining{?tenSach,page,size,sort*}
+export async function timKiemSach(tuKhoaTimKiem: string): Promise<KetQuaInterface> {
+
+    //Xác định endpoint
+    let duongDan: string = "http://localhost:8081/sach?sort=maSach,desc&page=0";
+    if (tuKhoaTimKiem != "") {
+        duongDan = `http://localhost:8081/sach/search/findByTenSachContaining?sort=maSach,desc&page=0&tenSach=${tuKhoaTimKiem}`
+    }
+
+    return laySach(duongDan);
+}
