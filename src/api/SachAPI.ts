@@ -59,12 +59,16 @@ export async function lay3QuyenSachMoiNhat(): Promise<KetQuaInterface> {
 }
 
 // Tìm kiếm sách theo endpoint http://localhost:8081/sach/search/findByTenSachContaining{?tenSach,page,size,sort*}
-export async function timKiemSach(tuKhoaTimKiem: string): Promise<KetQuaInterface> {
+export async function timKiemSach(tuKhoaTimKiem: string, maTheLoai: number): Promise<KetQuaInterface> {
 
     //Xác định endpoint
     let duongDan: string = "http://localhost:8081/sach?sort=maSach,desc&page=0";
-    if (tuKhoaTimKiem != "") {
+    if (tuKhoaTimKiem !== "" && maTheLoai == 0) {
         duongDan = `http://localhost:8081/sach/search/findByTenSachContaining?sort=maSach,desc&page=0&tenSach=${tuKhoaTimKiem}`
+    } else if (tuKhoaTimKiem === "" && maTheLoai > 0) {
+        duongDan = `http://localhost:8081/sach/search/findByDanhSachTheLoai_MaTheLoai?sort=maSach,desc&page=0&maTheLoai=${maTheLoai}`
+    } else if (tuKhoaTimKiem !== "" && maTheLoai > 0) {
+        duongDan = `http://localhost:8081/sach/search/findByTenSachContainingAndDanhSachTheLoai_MaTheLoai?sort=maSach,desc&page=0&maTheLoai=${maTheLoai}&tenSach=${tuKhoaTimKiem}`
     }
 
     return laySach(duongDan);

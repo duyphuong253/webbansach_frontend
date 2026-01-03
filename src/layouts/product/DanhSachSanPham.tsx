@@ -7,10 +7,10 @@ import { PhanTrang } from "../utils/PhanTrang";
 
 interface DanhSachSanPhamProps {
     tuKhoaTimKiem: string,
-
+    maTheLoai: number
 }
 
-function DanhSachSanPham({ tuKhoaTimKiem }: DanhSachSanPhamProps) {
+function DanhSachSanPham({ tuKhoaTimKiem, maTheLoai }: DanhSachSanPhamProps) {
     const [danhSachSach, setDanhSachSach] = useState<SachModel[]>([]);
     const [dangTaiDuLieu, setDangTaiDuLieu] = useState(true);
     const [baoLoi, setBaoLoi] = useState(null);
@@ -19,7 +19,7 @@ function DanhSachSanPham({ tuKhoaTimKiem }: DanhSachSanPhamProps) {
     const [tongSoSach, setTongSoSach] = useState(0);
 
     useEffect(() => {
-        if (tuKhoaTimKiem === "") {
+        if (tuKhoaTimKiem === "" && maTheLoai == 0) {
             layToanBoSach(trangHienTai - 1).then(
                 kq => {
                     setDanhSachSach(kq.ketQua);
@@ -32,7 +32,7 @@ function DanhSachSanPham({ tuKhoaTimKiem }: DanhSachSanPhamProps) {
                 }
             );
         } else {
-            timKiemSach(tuKhoaTimKiem).then(
+            timKiemSach(tuKhoaTimKiem, maTheLoai).then(
                 kq => {
                     setDanhSachSach(kq.ketQua);
                     setTongSoTrang(kq.tongSoTrang);
@@ -44,7 +44,7 @@ function DanhSachSanPham({ tuKhoaTimKiem }: DanhSachSanPhamProps) {
                 }
             );
         }
-    }, [trangHienTai, tuKhoaTimKiem]
+    }, [trangHienTai, tuKhoaTimKiem, maTheLoai]
     ); // Chỉ gọi 1 lần
 
     const phanTrang = (trang: number) => setTrangHienTai(trang);
