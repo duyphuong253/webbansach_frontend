@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SachModel from "../../../models/SachModel";
-import { lay3QuyenSachMoiNhat, layToanBoSach } from "../../../api/SachAPI";
+import { lay5QuyenSachMoiNhat, layToanBoSach } from "../../../api/SachAPI";
 import CarouselItem from "./CarouselItem";
 
 const Carousel: React.FC = () => {
@@ -9,7 +9,7 @@ const Carousel: React.FC = () => {
     const [baoLoi, setBaoLoi] = useState(null);
 
     useEffect(() => {
-        lay3QuyenSachMoiNhat().then(
+        lay5QuyenSachMoiNhat().then(
             kq => {
                 setDanhSachSach(kq.ketQua);
                 setDangTaiDuLieu(false);
@@ -43,6 +43,8 @@ const Carousel: React.FC = () => {
                 <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" className="active" aria-current="true" aria-label="Slide 1"></button>
                 <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
                 <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="4" aria-label="Slide 5"></button>
             </div>
             <div className="carousel-inner">
                 <div className="carousel-item active">
@@ -53,6 +55,12 @@ const Carousel: React.FC = () => {
                 </div>
                 <div className="carousel-item">
                     <CarouselItem key={2} sach={danhSachSach[2]} />
+                </div>
+                <div className="carousel-item">
+                    <CarouselItem key={3} sach={danhSachSach[3]} />
+                </div>
+                <div className="carousel-item">
+                    <CarouselItem key={4} sach={danhSachSach[4]} />
                 </div>
             </div>
             <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">

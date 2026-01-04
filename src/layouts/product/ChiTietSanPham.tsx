@@ -27,7 +27,36 @@ const ChiTietSanPham: React.FC = () => {
     const [sach, setSach] = useState<SachModel | null>(null);
     const [dangTaiDuLieu, setDangTaiDuLieu] = useState(true);
     const [baoLoi, setBaoLoi] = useState(null);
+    const [soLuong, setSoLuong] = useState(1);
 
+    const soLuongTonKho = (sach && sach.soLuong ? sach.soLuong : 0);
+
+    const tangSoLuong = () => {
+
+        if (soLuong < soLuongTonKho) {
+            setSoLuong(soLuong + 1);
+        }
+    }
+    const giamSoLuong = () => {
+        if (soLuong >= 2) {
+            setSoLuong(soLuong - 1);
+        }
+    }
+
+    const handleMuaNgay = () => {
+
+    }
+
+    const handleThemVaoGioHang = () => {
+
+    }
+
+    const handleSoLuongChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const soLuongMoi = parseInt(event.target.value);
+        if (!isNaN(soLuongMoi) && soLuongMoi >= 1 && soLuongMoi <= soLuongTonKho) {
+            setSoLuong(soLuongMoi);
+        }
+    }
     useEffect(() => {
         laySachTheoMaSach(maSachNumber)
             .then((sach) => {
@@ -75,9 +104,9 @@ const ChiTietSanPham: React.FC = () => {
                 <div className="col-8">
                     <div className="row">
                         <div className="col-8 text-start">
-                            <h1>
+                            <h2>
                                 {sach.tenSach}
-                            </h1>
+                            </h2>
                             <p>
                                 {renderRating(sach.trungBinhXepHang ? sach.trungBinhXepHang : 0)}
                             </p>
@@ -86,7 +115,31 @@ const ChiTietSanPham: React.FC = () => {
                             </h4>
                         </div>
                         <div className="col-4">
-                            <h1>Phần đặt hàng</h1>
+                            <div>
+                                <div className="mb-2 text-start">Số lượng</div>
+                                <div className="d-flex align-items-center">
+                                    <button className="btn btn-outline-secondary me-2" onClick={giamSoLuong}>-</button>
+                                    <input
+                                        className="form-control text-center"
+                                        type="number"
+                                        value={soLuong}
+                                        min={1}
+                                        onChange={handleSoLuongChange} />
+                                    <button className="btn btn-outline-secondary ms-2" onClick={tangSoLuong}>+</button>
+                                </div>
+                                {
+                                    sach.giaBan && (
+                                        <div className="mt-2 text-center">
+                                            Số tiền tạm tính <br />
+                                            <h4>{dinhDangSo(soLuong * sach.giaBan)}đ</h4>
+                                        </div>
+                                    )
+                                }
+                                <div className="d-grid gap-2">
+                                    <button type="button" className="btn btn-danger mt-3" onClick={handleMuaNgay}>Mua ngay</button>
+                                    <button type="button" className="btn btn-outline-secondary mt-3" onClick={handleThemVaoGioHang}>Thêm vào giỏ hàng</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

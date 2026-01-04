@@ -50,10 +50,10 @@ export async function layToanBoSach(trangHienTai: number): Promise<KetQuaInterfa
     return laySach(duongDan);
 }
 
-export async function lay3QuyenSachMoiNhat(): Promise<KetQuaInterface> {
+export async function lay5QuyenSachMoiNhat(): Promise<KetQuaInterface> {
 
     //Xác định endpoint
-    const duongDan: string = "http://localhost:8081/sach?sort=maSach,desc&page=0&size=3";
+    const duongDan: string = "http://localhost:8081/sach?sort=maSach,desc&page=0&size=5";
 
     return laySach(duongDan);
 }
