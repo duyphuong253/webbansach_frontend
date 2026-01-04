@@ -73,3 +73,36 @@ export async function timKiemSach(tuKhoaTimKiem: string, maTheLoai: number): Pro
 
     return laySach(duongDan);
 }
+
+export async function laySachTheoMaSach(maSach: number): Promise<SachModel | null> {
+
+    const duongDan: string = `http://localhost:8081/sach/${maSach}`;
+
+    try {
+        const response = await fetch(duongDan);
+
+        if (!response.ok) {
+            throw new Error(`Gặp lỗi trong quá trình gọi API lấy sách`)
+        }
+
+        const sachData = await response.json();
+
+        if (sachData) {
+            return {
+                maSach: sachData.maSach,
+                tenSach: sachData.tenSach,
+                giaBan: sachData.giaBan,
+                giaNiemYet: sachData.giaNiemYet,
+                moTa: sachData.moTa,
+                soLuong: sachData.soLuong,
+                tenTacGia: sachData.tenTacGia,
+                trungBinhXepHang: sachData.trungBinhXepHang,
+            }
+        } else {
+            throw new Error('Không tồn tại sách')
+        }
+    } catch (error) {
+        console.error("Error", error);
+        return null;
+    }
+}

@@ -57,7 +57,7 @@ const CarouselItem: React.FC<CarouselItemInterface> = (props) => {
             <div className="col-5">
 
                 <h5>{props.sach.tenSach}</h5>
-                <p>{props.sach.moTa}</p>
+                {/* <p>{props.sach.moTa}</p> */}
 
             </div>
         </div>

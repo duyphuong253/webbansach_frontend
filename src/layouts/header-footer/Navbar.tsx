@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { Search } from "react-bootstrap-icons";
+import { Link, NavLink } from "react-router-dom";
 
 interface NavbarProps {
     tuKhoaTimKiem: string,
@@ -38,7 +39,7 @@ function Navbar({ tuKhoaTimKiem, setTuKhoaTimKiem }: NavbarProps) {
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center">
 
                         <li className="nav-item">
-                            <a className="nav-link active" href="#">Trang chủ</a>
+                            <NavLink className="nav-link active" aria-current='page' to='/'>Trang chủ</NavLink>
                         </li>
 
                         <li className="nav-item dropdown">
@@ -53,19 +54,19 @@ function Navbar({ tuKhoaTimKiem, setTuKhoaTimKiem }: NavbarProps) {
                             </a>
                             <ul className="dropdown-menu">
                                 <li>
-                                    <Link className="dropdown-item" to="/1">
+                                    <NavLink className="dropdown-item" to="/1">
                                         Thể loại 1
-                                    </Link>
+                                    </NavLink>
                                 </li>
                                 <li>
-                                    <Link className="dropdown-item" to="/2">
+                                    <NavLink className="dropdown-item" to="/2">
                                         Thể loại 2
-                                    </Link>
+                                    </NavLink>
                                 </li>
                                 <li>
-                                    <Link className="dropdown-item" to="/3">
+                                    <NavLink className="dropdown-item" to="/3">
                                         Thể loại 3
-                                    </Link>
+                                    </NavLink>
                                 </li>
                             </ul>
 
@@ -96,7 +97,9 @@ function Navbar({ tuKhoaTimKiem, setTuKhoaTimKiem }: NavbarProps) {
                 {/* Tìm kiếm */}
                 <form className='d-flex' onSubmit={handleSearch}>
                     <input className='form-control me-2' type='search' placeholder='Tìm kiếm' aria-label='Search' onChange={searchInputChange} value={tuKhoaTamThoi}></input>
-                    <button className='btn btn-outline-success' type='submit' onClick={handleSearch}>Search</button>
+                    <button className='btn btn-outline-success' type='submit' onClick={handleSearch}>
+                        <Search />
+                    </button>
                 </form>
                 {/* Giỏ hàng */}
                 <ul className="navbar-nav me-1">
