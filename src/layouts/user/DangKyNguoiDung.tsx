@@ -50,15 +50,18 @@ function DangKyNguoiDung() {
                         ten: ten,
                         soDienThoai: soDienThoai,
                         gioiTinh: gioiTinh,
+                        daKichHoat: 0,
+                        maKichHoat: "",
                     })
                 }
 
                 );
 
                 if (response.ok) {
-                    setThongBao("Đăng ký thành công, vui lòng kiểm tra email để kích hoạt!");
+                    setThongBao("Đăng ký thành công, vui lòng kiểm tra email để kích hoạt tài khoản!");
                 } else {
-                    console.log(response.json());
+                    const errorText = await response.text();
+                    console.error("Lỗi từ backend:", errorText);
                     setThongBao("Đã xảy ra lỗi trong quá trình đăng ký tài khoản!");
                 }
             } catch (error) {
