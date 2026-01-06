@@ -19,6 +19,10 @@ function DanhSachSanPham({ tuKhoaTimKiem, maTheLoai }: DanhSachSanPhamProps) {
     const [tongSoSach, setTongSoSach] = useState(0);
 
     useEffect(() => {
+        setTrangHienTai(1);
+    }, [tuKhoaTimKiem, maTheLoai]);
+
+    useEffect(() => {
         if (tuKhoaTimKiem === "" && maTheLoai == 0) {
             layToanBoSach(trangHienTai - 1).then(
                 kq => {
@@ -32,7 +36,7 @@ function DanhSachSanPham({ tuKhoaTimKiem, maTheLoai }: DanhSachSanPhamProps) {
                 }
             );
         } else {
-            timKiemSach(tuKhoaTimKiem, maTheLoai).then(
+            timKiemSach(tuKhoaTimKiem, maTheLoai, trangHienTai - 1).then(
                 kq => {
                     setDanhSachSach(kq.ketQua);
                     setTongSoTrang(kq.tongSoTrang);

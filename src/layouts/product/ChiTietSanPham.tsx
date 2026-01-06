@@ -6,6 +6,9 @@ import HinhAnhSanPham from "./components/HinhAnhSanPham";
 import DanhGiaSanPham from "./components/DanhGiaSanPham";
 import renderRating from "../utils/SaoXepHang";
 import dinhDangSo from "../utils/DinhDangSo";
+import { addToCart } from "./cart/CartSevice";
+import { useNavigate } from "react-router-dom";
+import CartItem from "../../models/CartItem";
 
 
 const ChiTietSanPham: React.FC = () => {
@@ -28,7 +31,7 @@ const ChiTietSanPham: React.FC = () => {
     const [dangTaiDuLieu, setDangTaiDuLieu] = useState(true);
     const [baoLoi, setBaoLoi] = useState(null);
     const [soLuong, setSoLuong] = useState(1);
-
+    const navigate = useNavigate();
     const soLuongTonKho = (sach && sach.soLuong ? sach.soLuong : 0);
 
     const tangSoLuong = () => {
@@ -43,13 +46,36 @@ const ChiTietSanPham: React.FC = () => {
         }
     }
 
-    const handleMuaNgay = () => {
-
-    }
-
     const handleThemVaoGioHang = () => {
+        if (!sach || !sach.giaBan) return;
 
-    }
+        const item = new CartItem(
+            sach.maSach,
+            sach.tenSach ?? "",
+            sach.giaBan,
+            soLuong,
+            ""
+        );
+
+        addToCart(item);
+
+        alert("Đã thêm vào giỏ hàng!");
+    };
+
+    const handleMuaNgay = () => {
+        if (!sach || !sach.giaBan) return;
+
+        const item = new CartItem(
+            sach.maSach,
+            sach.tenSach ?? "",
+            sach.giaBan,
+            soLuong,
+            ""
+        );
+
+        addToCart(item);
+        navigate("/gio-hang");
+    };
 
     const handleSoLuongChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const soLuongMoi = parseInt(event.target.value);
@@ -94,6 +120,8 @@ const ChiTietSanPham: React.FC = () => {
             </div>
         );
     }
+
+
 
     return (
         <div className="container">

@@ -1,15 +1,27 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState, useEffect } from "react";
 import { Search } from "react-bootstrap-icons";
 import { Link, NavLink } from "react-router-dom";
-
+import { layDanhSachTheLoai } from "../../api/TheLoaiAPI";
 interface NavbarProps {
     tuKhoaTimKiem: string,
     setTuKhoaTimKiem: (tuKhoa: string) => void;
 }
 
+interface TheLoai {
+    maTheLoai: number;
+    tenTheLoai: string;
+}
+
 function Navbar({ tuKhoaTimKiem, setTuKhoaTimKiem }: NavbarProps) {
 
     const [tuKhoaTamThoi, setTuKhoaTamThoi] = useState('');
+    const [danhSachTheLoai, setDanhSachTheLoai] = useState<TheLoai[]>([]);
+
+    useEffect(() => {
+        layDanhSachTheLoai()
+            .then(data => setDanhSachTheLoai(data))
+            .catch(err => console.error(err));
+    }, []);
 
     const searchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setTuKhoaTamThoi(e.target.value);
@@ -42,34 +54,35 @@ function Navbar({ tuKhoaTimKiem, setTuKhoaTimKiem }: NavbarProps) {
                             <NavLink className="nav-link active" aria-current='page' to='/'>Trang chủ</NavLink>
                         </li>
 
+                        {/* THỂ LOẠI */}
                         <li className="nav-item dropdown">
-                            <a
-                                className="nav-link dropdown-toggle"
-                                href="#"
+                            <button
+                                className="nav-link dropdown-toggle btn btn-link text-white"
                                 id="navbarDropdown1"
-                                role="button"
                                 data-bs-toggle="dropdown"
+                                type="button"
                             >
                                 Thể loại sách
-                            </a>
-                            <ul className="dropdown-menu">
-                                <li>
-                                    <NavLink className="dropdown-item" to="/1">
-                                        Thể loại 1
-                                    </NavLink>
-                                </li>
-                                <li>
-                                    <NavLink className="dropdown-item" to="/2">
-                                        Thể loại 2
-                                    </NavLink>
-                                </li>
-                                <li>
-                                    <NavLink className="dropdown-item" to="/3">
-                                        Thể loại 3
-                                    </NavLink>
-                                </li>
-                            </ul>
+                            </button>
 
+                            <ul className="dropdown-menu">
+                                {danhSachTheLoai.length === 0 && (
+                                    <li className="dropdown-item text-muted">
+                                        Không có dữ liệu
+                                    </li>
+                                )}
+
+                                {danhSachTheLoai.map((theLoai) => (
+                                    <li key={theLoai.maTheLoai}>
+                                        <NavLink
+                                            className="dropdown-item"
+                                            to={`/the-loai/${theLoai.maTheLoai}`}
+                                        >
+                                            {theLoai.tenTheLoai}
+                                        </NavLink>
+                                    </li>
+                                ))}
+                            </ul>
                         </li>
 
                         <li className="nav-item dropdown">

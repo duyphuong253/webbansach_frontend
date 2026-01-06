@@ -59,16 +59,36 @@ export async function lay5QuyenSachMoiNhat(): Promise<KetQuaInterface> {
 }
 
 // Tìm kiếm sách theo endpoint http://localhost:8081/sach/search/findByTenSachContaining{?tenSach,page,size,sort*}
-export async function timKiemSach(tuKhoaTimKiem: string, maTheLoai: number): Promise<KetQuaInterface> {
+export async function timKiemSach(tuKhoaTimKiem: string, maTheLoai: number, trangHienTai: number): Promise<KetQuaInterface> {
 
     //Xác định endpoint
-    let duongDan: string = "http://localhost:8081/sach?sort=maSach,desc&page=0";
-    if (tuKhoaTimKiem !== "" && maTheLoai == 0) {
-        duongDan = `http://localhost:8081/sach/search/findByTenSachContaining?sort=maSach,desc&page=0&tenSach=${tuKhoaTimKiem}`
+    // let duongDan: string = "http://localhost:8081/sach?sort=maSach,desc&page=0";
+    // if (tuKhoaTimKiem !== "" && maTheLoai == 0) {
+    //     duongDan = `http://localhost:8081/sach/search/findByTenSachContaining?sort=maSach,desc&page=0&tenSach=${tuKhoaTimKiem}`
+    // } else if (tuKhoaTimKiem === "" && maTheLoai > 0) {
+    //     duongDan = `http://localhost:8081/sach/search/findByDanhSachTheLoai_MaTheLoai?sort=maSach,desc&page=0&maTheLoai=${maTheLoai}`
+    // } else if (tuKhoaTimKiem !== "" && maTheLoai > 0) {
+    //     duongDan = `http://localhost:8081/sach/search/findByTenSachContainingAndDanhSachTheLoai_MaTheLoai?sort=maSach,desc&page=0&maTheLoai=${maTheLoai}&tenSach=${tuKhoaTimKiem}`
+    // }
+
+    // return laySach(duongDan);
+    let duongDan = `http://localhost:8081/sach?sort=maSach,desc&page=${trangHienTai}&size=8`;
+
+    if (tuKhoaTimKiem !== "" && maTheLoai === 0) {
+        duongDan =
+            `http://localhost:8081/sach/search/findByTenSachContaining` +
+            `?tenSach=${tuKhoaTimKiem}&page=${trangHienTai}&size=8&sort=maSach,desc`;
+
     } else if (tuKhoaTimKiem === "" && maTheLoai > 0) {
-        duongDan = `http://localhost:8081/sach/search/findByDanhSachTheLoai_MaTheLoai?sort=maSach,desc&page=0&maTheLoai=${maTheLoai}`
+        duongDan =
+            `http://localhost:8081/sach/search/findByDanhSachTheLoai_MaTheLoai` +
+            `?maTheLoai=${maTheLoai}&page=${trangHienTai}&size=8&sort=maSach,desc`;
+
     } else if (tuKhoaTimKiem !== "" && maTheLoai > 0) {
-        duongDan = `http://localhost:8081/sach/search/findByTenSachContainingAndDanhSachTheLoai_MaTheLoai?sort=maSach,desc&page=0&maTheLoai=${maTheLoai}&tenSach=${tuKhoaTimKiem}`
+        duongDan =
+            `http://localhost:8081/sach/search/findByTenSachContainingAndDanhSachTheLoai_MaTheLoai` +
+            `?tenSach=${tuKhoaTimKiem}&maTheLoai=${maTheLoai}` +
+            `&page=${trangHienTai}&size=8&sort=maSach,desc`;
     }
 
     return laySach(duongDan);

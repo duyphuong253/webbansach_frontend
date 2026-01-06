@@ -1,3 +1,5 @@
+import { rejects } from "assert";
+import { resolve } from "path";
 import React, { useState } from "react";
 
 function DangKyNguoiDung() {
@@ -10,6 +12,7 @@ function DangKyNguoiDung() {
     const [matKhau, setMatKhau] = useState("");
     const [matKhauLapLai, setMatKhauLapLai] = useState("");
     const [gioiTinh, setGioiTinh] = useState("");
+    const [avatar, setAvatar] = useState<File | null>(null);
 
     //Các biến báo lỗi
     const [errorTenDangNhap, setErrorTenDangNhap] = useState("");
@@ -17,6 +20,16 @@ function DangKyNguoiDung() {
     const [errorMatKhau, setErrorMatKhau] = useState("");
     const [errorMatKhauLapLai, setErrorMatKhauLapLai] = useState("");
     const [thongBao, setThongBao] = useState("");
+
+    // Convert file to Base64
+    const getBase64 = (file: File): Promise<string | null> => {
+        return new Promise((resolve, rejects) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result ? (reader.result as string).split(',')[1] : null);
+            reader.onerror = (error) => rejects(error);
+        })
+    }
 
     // Xử lý thông tin trên form
     const handleSubmit = async (e: React.FormEvent) => {
@@ -35,6 +48,7 @@ function DangKyNguoiDung() {
         const isMatKhauLapLaiValid = !await kiemTraMatKhauLapLai(matKhauLapLai);
 
         if (isTenDangNhapValid && isEmailValid && isMatKhauValid && isMatKhauLapLaiValid) {
+            const base64Avatar = avatar ? await getBase64(avatar) : null;
             try {
                 const url = `http://localhost:8081/tai-khoan/dang-ky`;
                 const response = await fetch(url, {
@@ -52,6 +66,7 @@ function DangKyNguoiDung() {
                         gioiTinh: gioiTinh,
                         daKichHoat: 0,
                         maKichHoat: "",
+                        avatar: base64Avatar,
                     })
                 }
 
@@ -175,6 +190,13 @@ function DangKyNguoiDung() {
         // kiểm tra sự tồn tại
         return kiemTraMatKhauLapLai(e.target.value);
     }
+    // Xử lý thay đổi file
+    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const file = e.target.files[0];
+            setAvatar(file);
+        }
+    }
     return (
         <div className="container">
             <h1 className="mt-5 text-center">Đăng ký</h1>
@@ -266,6 +288,18 @@ function DangKyNguoiDung() {
                             <option value="M">Nam</option>
                             <option value="F">Nữ</option>
                         </select>
+                    </div>
+                    <div className="mb-3 text-start">
+                        <label htmlFor="avatar" className="form-label">Avatar</label>
+                        <input
+                            type="file"
+                            id="avatar"
+                            className="form-control"
+
+                            accept="images/*"
+                            onChange={handleAvatarChange}
+                        >
+                        </input>
                     </div>
 
                     <button
