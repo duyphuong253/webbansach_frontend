@@ -33,6 +33,11 @@ const DangNhap = () => {
                 //Lưu token vào localStorage hoặc cookies
                 localStorage.setItem('token', jwt);
                 //Điều hướng đến trang chính hoặc thực hiện các tác vụ sau đăng nhập
+                // **Dispatch event để Navbar cập nhật cart**
+                window.dispatchEvent(new Event("cartUpdated"));
+                // Thông báo đăng nhập thành công (nếu cần)
+                setError('Đăng nhập thành công');
+                // Điều hướng sang trang chính
                 navigate('/');
             }
         ).catch((error) => {

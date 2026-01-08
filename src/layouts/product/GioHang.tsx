@@ -2,10 +2,27 @@ import { useEffect, useState } from "react";
 import CartItem from "../../models/CartItem";
 import { getCart, getTotalMoney, removeFromCart, updateQuantity } from "./cart/CartSevice";
 import dinhDangSo from "../utils/DinhDangSo";
+import { useNavigate } from "react-router-dom";
 
 const GioHang: React.FC = () => {
-
+    const navigate = useNavigate();
     const [cart, setCart] = useState<CartItem[]>([]);
+
+    const handleCheckout = () => {
+        if (cart.length === 0) {
+            alert("Giỏ hàng đang trống!");
+            return;
+        }
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("Bạn chưa đăng nhập!");
+            return;
+        }
+
+        // 👉 ĐÚNG FLOW: Không tạo đơn hàng tại đây
+        navigate("/checkout");
+    };
 
     useEffect(() => {
         setCart(getCart());
@@ -86,8 +103,8 @@ const GioHang: React.FC = () => {
                     </span>
                 </h4>
 
-                <button className="btn btn-success mt-2">
-                    Thanh toán
+                <button className="btn btn-success mt-2" onClick={handleCheckout}>
+                    Đặt hàng
                 </button>
             </div>
         </div>

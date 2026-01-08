@@ -2,6 +2,9 @@ import React, { ChangeEvent, useState, useEffect } from "react";
 import { Search } from "react-bootstrap-icons";
 import { Link, NavLink } from "react-router-dom";
 import { layDanhSachTheLoai } from "../../api/TheLoaiAPI";
+import { getTotalItems } from "../product/cart/CartSevice";
+import { logoutUser } from "../product/cart/CartSevice";
+import { useNavigate } from "react-router-dom";
 interface NavbarProps {
     tuKhoaTimKiem: string,
     setTuKhoaTimKiem: (tuKhoa: string) => void;
@@ -13,29 +16,59 @@ interface TheLoai {
 }
 
 function Navbar({ tuKhoaTimKiem, setTuKhoaTimKiem }: NavbarProps) {
-
+    const navigate = useNavigate();
     const [tuKhoaTamThoi, setTuKhoaTamThoi] = useState('');
     const [danhSachTheLoai, setDanhSachTheLoai] = useState<TheLoai[]>([]);
+    const [soLuongGioHang, setSoLuongGioHang] = useState(0);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+    // Load thể loại
     useEffect(() => {
         layDanhSachTheLoai()
             .then(data => setDanhSachTheLoai(data))
             .catch(err => console.error(err));
     }, []);
 
+    // Cập nhật số lượng cart & login state
+    useEffect(() => {
+        const updateCartCount = () => {
+            setSoLuongGioHang(getTotalItems());
+            setIsLoggedIn(!!localStorage.getItem("token")); // kiểm tra login
+        };
+
+        updateCartCount(); // load lần đầu
+        window.addEventListener("cartUpdated", updateCartCount);
+
+        return () => {
+            window.removeEventListener("cartUpdated", updateCartCount);
+        };
+    }, []);
+
+    // Tìm kiếm
     const searchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setTuKhoaTamThoi(e.target.value);
-    }
+    };
 
     const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault(); // không reload trang
+        e.preventDefault();
+        if (tuKhoaTamThoi.trim() === "") {
+            navigate("/");
+            return;
+        }
         setTuKhoaTimKiem(tuKhoaTamThoi);
-    }
+    };
+
+    // Logout
+    const handleLogout = () => {
+        logoutUser();
+        setSoLuongGioHang(0);
+        setIsLoggedIn(false);
+    };
 
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
-                <a className="navbar-brand" href="#">BookStore</a>
+                <NavLink className="navbar-brand" to='/'>BookStore</NavLink>
                 <button
                     className="navbar-toggler"
                     type="button"
@@ -47,6 +80,7 @@ function Navbar({ tuKhoaTimKiem, setTuKhoaTimKiem }: NavbarProps) {
                 >
                     <span className="navbar-toggler-icon"></span>
                 </button>
+
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center">
 
@@ -67,17 +101,11 @@ function Navbar({ tuKhoaTimKiem, setTuKhoaTimKiem }: NavbarProps) {
 
                             <ul className="dropdown-menu">
                                 {danhSachTheLoai.length === 0 && (
-                                    <li className="dropdown-item text-muted">
-                                        Không có dữ liệu
-                                    </li>
+                                    <li className="dropdown-item text-muted">Không có dữ liệu</li>
                                 )}
-
                                 {danhSachTheLoai.map((theLoai) => (
                                     <li key={theLoai.maTheLoai}>
-                                        <NavLink
-                                            className="dropdown-item"
-                                            to={`/the-loai/${theLoai.maTheLoai}`}
-                                        >
+                                        <NavLink className="dropdown-item" to={`/the-loai/${theLoai.maTheLoai}`}>
                                             {theLoai.tenTheLoai}
                                         </NavLink>
                                     </li>
@@ -107,31 +135,53 @@ function Navbar({ tuKhoaTimKiem, setTuKhoaTimKiem }: NavbarProps) {
                         </li>
                     </ul>
                 </div>
+
                 {/* Tìm kiếm */}
                 <form className='d-flex' onSubmit={handleSearch}>
-                    <input className='form-control me-2' type='search' placeholder='Tìm kiếm' aria-label='Search' onChange={searchInputChange} value={tuKhoaTamThoi}></input>
-                    <button className='btn btn-outline-success' type='submit' onClick={handleSearch}>
+                    <input
+                        className='form-control me-2'
+                        type='search'
+                        placeholder='Tìm kiếm'
+                        aria-label='Search'
+                        onChange={searchInputChange}
+                        value={tuKhoaTamThoi}
+                    />
+                    <button className='btn btn-outline-success' type='submit'>
                         <Search />
                     </button>
                 </form>
+
                 {/* Giỏ hàng */}
                 <ul className="navbar-nav me-1">
-                    <li className="nav-item">
-                        <a className="nav-link" href="#">
+                    <li className="nav-item position-relative">
+                        <Link className="nav-link" to="/gio-hang">
                             <i className="fas fa-shopping-cart"></i>
-                        </a>
+                            {soLuongGioHang > 0 && (
+                                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    {soLuongGioHang}
+                                </span>
+                            )}
+                        </Link>
                     </li>
                 </ul>
-                {/* Đăng nhập */}
+
+                {/* Đăng nhập / Đăng xuất */}
                 <ul className="navbar-nav me-1">
                     <li className="nav-item">
-                        <a className="nav-link" href="#">
-                            <i className="fas fa-user"></i>
-                        </a>
+                        {isLoggedIn ? (
+                            <button className="btn btn-link nav-link text-white" onClick={handleLogout}>
+                                <i className="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        ) : (
+                            <Link className="nav-link" to="/dang-nhap">
+                                <i className="fas fa-user"></i> Login
+                            </Link>
+                        )}
                     </li>
                 </ul>
             </div>
         </nav>
-    )
+    );
 }
+
 export default Navbar;

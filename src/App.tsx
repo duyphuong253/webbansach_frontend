@@ -14,6 +14,8 @@ import Test from './layouts/user/Test';
 import SachForm from './layouts/admin/SachForm';
 import SachForm_Admin from './layouts/admin/SachForm';
 import GioHang from './layouts/product/GioHang';
+import CheckoutSuccess from './layouts/product/CheckoutSuccess';
+import CheckoutPage from './layouts/homepage/CheckoutPage';
 
 function App() {
   const [tuKhoaTimKiem, setTuKhoaTimKiem] = useState('');
@@ -33,6 +35,8 @@ function App() {
           <Route path='/test' element={<Test />} />
           <Route path='/admin/them-sach' element={<SachForm_Admin />} />
           <Route path="/gio-hang" element={<GioHang />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/checkout-success/:maDonHang" element={<CheckoutSuccess />} />
 
         </Routes>
 
